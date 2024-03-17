@@ -8,6 +8,7 @@ import { AppService } from './app.service';
 import { AppController } from './app.controller';
 import appEnvConfig from './config/app-env.config';
 import { UserModule } from './user/user.module';
+import { WalletModule } from './wallet/wallet.module';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { UserModule } from './user/user.module';
       inject: [ConfigService],
     }),
     UserModule,
+    WalletModule,
   ],
   controllers: [AppController],
   providers: [AppService],
