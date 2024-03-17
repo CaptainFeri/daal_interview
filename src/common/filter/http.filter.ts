@@ -1,5 +1,6 @@
 import {
   ArgumentsHost,
+  BadGatewayException,
   Catch,
   ExceptionFilter,
   HttpException,
@@ -28,23 +29,23 @@ export class HttpExceptionFilter<T>
     let httpStatus = HttpStatus.BAD_REQUEST;
 
     if (exception instanceof I18nValidationException) {
-      result.errors = this.makeErrorObject(exception.errors);
       result.message = this.getMessage('BAD_REQUEST');
     } else if (exception instanceof InternalServerErrorException) {
       result.message = exception.message;
       httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
     } else if (exception instanceof HttpException) {
-      const message = exception.getResponse()['message'];
-      if (message.includes('Cannot')) {
-        httpStatus = HttpStatus.NOT_FOUND;
-        result.message = message;
-        result.errors = {};
+      const message = exception.message;
+      if (message.includes('.')) {
+        result.message = this.getMessage(exception.message);
       } else {
-        if (typeof message === 'string') {
-          result.message = this.getMessage(message);
+        if (exception.getStatus() == HttpStatus.FORBIDDEN) {
+          httpStatus = HttpStatus.FORBIDDEN;
+          result.message = message;
+          result.errors = {};
         } else {
-          result.message = this.getMessage(exception.getResponse()['error']);
-          result.errors = message;
+          httpStatus = HttpStatus.UNAUTHORIZED;
+          result.message = message;
+          result.errors = {};
         }
       }
     }

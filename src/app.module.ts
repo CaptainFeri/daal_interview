@@ -7,6 +7,7 @@ import { join } from 'path';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
 import appEnvConfig from './config/app-env.config';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import appEnvConfig from './config/app-env.config';
       },
       inject: [ConfigService],
     }),
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
